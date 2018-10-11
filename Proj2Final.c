@@ -54,14 +54,22 @@
 #include <math.h>
 #include "btn.h"
 
-#define FOSC (80000000L)
-#define CORE_TICK_PERIOD (FOSC/20)
+#define SYS_FREQ(80000000L)
+#define INT_SEC 10
+// #define FOSC (80000000L)
+#define CORE_TICK_RATE (SYS_FREQ/2/INT_SEC)
 
 #define DELAY_BTN 50              //50 ms 1953
 enum states {LEFT, RIGHT, COUNT_UP, COUNT_DOWN, STOP};
 int btnState = STOP;
 int hex1, hex2;
 int ssdVal = 0;
+int milSec = 0;
+
+enum Timermode {
+    NONE, UP, DOWN
+};
+int Timermode = NONE;
 
 int main(void){
 
@@ -99,9 +107,8 @@ int main(void){
         if(btnState == COUNT_UP){
             int i;
             for(i=0; i < hex1 + hex2 + 1; i++){
-                ssdVal = i;
-                update_SSD(ssdVal);
-                countTimer(1000);
+                update_SSD(i);
+                delay_ms(1000);
             }
             btnState = STOP;
         }
@@ -173,10 +180,11 @@ void delay_ms(int ms) {
 }
 
 void countTimer(int ms) {
-    unsigned int ui;
-    ui = ReadCoreTimer();
+    unsigned int sysCyc = (ReadCoreTimer())/2;
     // convert in seconds (1 core tick = 2 SYS cycles)
-   return ( ui * 2.0 /80000000);
+    for(int i = 0; i<sysCyc; i++){
+        int ssdRead = i;
+    }
 }
 
 void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
