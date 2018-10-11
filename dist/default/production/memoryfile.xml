@@ -4,8 +4,13 @@
     <memory name="program">                 
       <units>bytes</units>                 
       <length>531968</length>                 
+<<<<<<< HEAD
       <used>18612</used>                     
       <free>513356</free>                     
+=======
+      <used>19440</used>                     
+      <free>512528</free>                     
+>>>>>>> parent of d72a419... timer setup
     </memory>                              
     <memory name="data">              
       <units>bytes</units>                 

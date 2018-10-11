@@ -54,22 +54,21 @@
 #include <math.h>
 #include "btn.h"
 
+<<<<<<< HEAD
 #define SYS_FREQ (80000000L)
 #define INT_SEC 10
 // #define FOSC (80000000L)
 #define CORE_TICK_RATE (SYS_FREQ/2/INT_SEC)
+=======
+#define FOSC (80000000L)
+#define CORE_TICK_PERIOD (FOSC/20)
+>>>>>>> parent of d72a419... timer setup
 
 #define DELAY_BTN 50              //50 ms 1953
 enum states {LEFT, RIGHT, COUNT_UP, COUNT_DOWN, STOP};
 int btnState = STOP;
 int hex1, hex2;
 int ssdVal = 0;
-int milSec = 0;
-
-enum Timermode {
-    NONE, UP, DOWN
-};
-int Timermode = NONE;
 
 int main(void){
 
@@ -105,12 +104,21 @@ int main(void){
             ssdVal = hex1 + hex2;
         }
         if(btnState == COUNT_UP){
+<<<<<<< HEAD
             // int i;
             // for(i=0; i < hex1 + hex2 + 1; i++){
                 update_SSD(milSec);
                 delay_ms(1000);
                 UpdateCoreTimer(CORE_TICK_RATE);
             // }
+=======
+            int i;
+            for(i=0; i < hex1 + hex2 + 1; i++){
+                ssdVal = i;
+                update_SSD(ssdVal);
+                countTimer(1000);
+            }
+>>>>>>> parent of d72a419... timer setup
             btnState = STOP;
         }
         delay_ms(DELAY_BTN);
@@ -180,6 +188,7 @@ void delay_ms(int ms) {
     }
 }
 
+<<<<<<< HEAD
 // void countTimer(int ms) {
 //     unsigned int sysCyc = (ReadCoreTimer())/2;
 //     // convert in seconds (1 core tick = 2 SYS cycles)
@@ -187,6 +196,14 @@ void delay_ms(int ms) {
 //         int ssdRead = i;
 //     }
 // }
+=======
+void countTimer(int ms) {
+    unsigned int ui;
+    ui = ReadCoreTimer();
+    // convert in seconds (1 core tick = 2 SYS cycles)
+   return ( ui * 2.0 /80000000);
+}
+>>>>>>> parent of d72a419... timer setup
 
 void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
     mCTClearIntFlag(); //clear interrupt
