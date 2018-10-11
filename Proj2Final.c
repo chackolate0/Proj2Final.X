@@ -70,7 +70,6 @@ int main(void){
     SSD_Init();
     SWT_Init();
 
-=======
     BTN_Init();
     
     OpenCoreTimer(CORE_TICK_PERIOD);
@@ -110,7 +109,6 @@ int main(void){
         LED_SetGroupValue(SWT_GetGroupValue());
         update_SSD(SWT_GetGroupValue());
         //SSD_WriteDigitsGroupedDecimal(SWT_GetGroupValue(),0);
-=======
         update_SSD(ssdVal);
     }
 }
@@ -155,11 +153,9 @@ void update_SSD(int value) {
     if (hunds == 0 && tens == 0 && ones == 0)
         SSD2 = 0;
     else
-<<<<<<< HEAD:Proj2.c
         SSD1 = ones;
 
     SSD_WriteDigits(SSD1, SSD2, SSD3, SSD4, 0, 0, 0, 0);
-=======
         SSD2 = ones;
     tenths = floor(value % 1);
     SSD1 = tenths;
