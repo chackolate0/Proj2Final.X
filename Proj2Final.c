@@ -102,7 +102,7 @@ int main(void){
              int i;
              for(i=0; i < hex1 + hex2 + 1; i++){
                 update_SSD(i);
-                delay_ms(1000);
+                delay_ms(100);
                 UpdateCoreTimer(CORE_TICK_RATE);
              }
              btnState = STOP;
