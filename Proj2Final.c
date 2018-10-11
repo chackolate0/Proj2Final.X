@@ -55,7 +55,11 @@
 #include "btn.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SYS_FREQ (80000000L)
+=======
+#define SYS_FREQ(80000000L)
+>>>>>>> parent of f4e80c3... e
 #define INT_SEC 10
 // #define FOSC (80000000L)
 #define CORE_TICK_RATE (SYS_FREQ/2/INT_SEC)
@@ -80,7 +84,7 @@ int main(void){
 
     BTN_Init();
 
-    OpenCoreTimer(CORE_TICK_RATE);
+    OpenCoreTimer(CORE_TICK_PERIOD);
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
     mConfigIntCoreTimer(CT_INT_ON | CT_INT_PRIOR_5 | CT_INT_SUB_PRIOR_0);
     INTEnableSystemMultiVectoredInt();
@@ -105,6 +109,7 @@ int main(void){
         }
         if(btnState == COUNT_UP){
 <<<<<<< HEAD
+<<<<<<< HEAD
             // int i;
             // for(i=0; i < hex1 + hex2 + 1; i++){
                 update_SSD(milSec);
@@ -119,6 +124,13 @@ int main(void){
                 countTimer(1000);
             }
 >>>>>>> parent of d72a419... timer setup
+=======
+            int i;
+            for(i=0; i < hex1 + hex2 + 1; i++){
+                update_SSD(i);
+                delay_ms(1000);
+            }
+>>>>>>> parent of f4e80c3... e
             btnState = STOP;
         }
         delay_ms(DELAY_BTN);
@@ -189,6 +201,7 @@ void delay_ms(int ms) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // void countTimer(int ms) {
 //     unsigned int sysCyc = (ReadCoreTimer())/2;
 //     // convert in seconds (1 core tick = 2 SYS cycles)
@@ -204,6 +217,15 @@ void countTimer(int ms) {
    return ( ui * 2.0 /80000000);
 }
 >>>>>>> parent of d72a419... timer setup
+=======
+void countTimer(int ms) {
+    unsigned int sysCyc = (ReadCoreTimer())/2;
+    // convert in seconds (1 core tick = 2 SYS cycles)
+    for(int i = 0; i<sysCyc; i++){
+        int ssdRead = i;
+    }
+}
+>>>>>>> parent of f4e80c3... e
 
 void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
     mCTClearIntFlag(); //clear interrupt
@@ -211,7 +233,7 @@ void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
             delay_ms(DELAY_BTN);
             btnState = STOP;
         }
-        else if(BTN_GetValue(3)){//PORTBbits.RB8
+    else if(BTN_GetValue(3)){//PORTBbits.RB8
             delay_ms(DELAY_BTN);
             btnState = RIGHT;
         }
@@ -222,13 +244,11 @@ void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
         else if(BTN_GetValue(0)){
             delay_ms(DELAY_BTN);
             btnState = COUNT_UP;
-            milSec++;
             }
         else if(BTN_GetValue(4)){
             delay_ms(DELAY_BTN);
             btnState = COUNT_DOWN;
-            milSec--;
         }
 
-    UpdateCoreTimer(CORE_TICK_RATE);  //update period
+    UpdateCoreTimer(CORE_TICK_PERIOD);  //update period
 }

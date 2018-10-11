@@ -5,18 +5,23 @@
       <units>bytes</units>                 
       <length>531968</length>                 
 <<<<<<< HEAD
+<<<<<<< HEAD
       <used>18612</used>                     
       <free>513356</free>                     
 =======
       <used>19440</used>                     
       <free>512528</free>                     
 >>>>>>> parent of d72a419... timer setup
+=======
+      <used>18624</used>                     
+      <free>513344</free>                     
+>>>>>>> parent of f4e80c3... e
     </memory>                              
     <memory name="data">              
       <units>bytes</units>                 
       <length>131072</length>                 
-      <used>392</used>                     
-      <free>130680</free>                     
+      <used>384</used>                     
+      <free>130688</free>                     
     </memory>                              
   </executable>                            
 </project>                                 
