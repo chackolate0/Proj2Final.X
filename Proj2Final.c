@@ -54,7 +54,7 @@
 #include <math.h>
 #include "btn.h"
 
-#define SYS_FREQ(80000000L)
+#define SYS_FREQ (80000000L)
 #define INT_SEC 10
 // #define FOSC (80000000L)
 #define CORE_TICK_RATE (SYS_FREQ/2/INT_SEC)
@@ -81,7 +81,7 @@ int main(void){
 
     BTN_Init();
 
-    OpenCoreTimer(CORE_TICK_PERIOD);
+    OpenCoreTimer(CORE_TICK_RATE);
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
     mConfigIntCoreTimer(CT_INT_ON | CT_INT_PRIOR_5 | CT_INT_SUB_PRIOR_0);
     INTEnableSystemMultiVectoredInt();
@@ -105,11 +105,12 @@ int main(void){
             ssdVal = hex1 + hex2;
         }
         if(btnState == COUNT_UP){
-            int i;
-            for(i=0; i < hex1 + hex2 + 1; i++){
-                update_SSD(i);
+            // int i;
+            // for(i=0; i < hex1 + hex2 + 1; i++){
+                update_SSD(milSec);
                 delay_ms(1000);
-            }
+                UpdateCoreTimer(CORE_TICK_RATE);
+            // }
             btnState = STOP;
         }
         delay_ms(DELAY_BTN);
@@ -179,13 +180,13 @@ void delay_ms(int ms) {
     }
 }
 
-void countTimer(int ms) {
-    unsigned int sysCyc = (ReadCoreTimer())/2;
-    // convert in seconds (1 core tick = 2 SYS cycles)
-    for(int i = 0; i<sysCyc; i++){
-        int ssdRead = i;
-    }
-}
+// void countTimer(int ms) {
+//     unsigned int sysCyc = (ReadCoreTimer())/2;
+//     // convert in seconds (1 core tick = 2 SYS cycles)
+//     for(int i = 0; i<sysCyc; i++){
+//         int ssdRead = i;
+//     }
+// }
 
 void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
     mCTClearIntFlag(); //clear interrupt
@@ -193,7 +194,7 @@ void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
             delay_ms(DELAY_BTN);
             btnState = STOP;
         }
-    else if(BTN_GetValue(3)){//PORTBbits.RB8
+        else if(BTN_GetValue(3)){//PORTBbits.RB8
             delay_ms(DELAY_BTN);
             btnState = RIGHT;
         }
@@ -204,11 +205,13 @@ void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
         else if(BTN_GetValue(0)){
             delay_ms(DELAY_BTN);
             btnState = COUNT_UP;
+            milSec++;
             }
         else if(BTN_GetValue(4)){
             delay_ms(DELAY_BTN);
             btnState = COUNT_DOWN;
+            milSec--;
         }
 
-    UpdateCoreTimer(CORE_TICK_PERIOD);  //update period
+    UpdateCoreTimer(CORE_TICK_RATE);  //update period
 }
