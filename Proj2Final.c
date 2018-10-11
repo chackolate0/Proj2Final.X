@@ -1,9 +1,10 @@
 /* ************************************************************************** */
 /** Descriptive File Name
   @Company
-    Company Name
+    CPEG 222 Team 1
+    Alex Chacko & Matias Saavedra
   @File Name
-    filename.c
+    Proj2Final.c
   @Summary
     Brief description of the file.
   @Description
@@ -71,15 +72,15 @@ int main(void){
     SWT_Init();
 
     BTN_Init();
-    
+
     OpenCoreTimer(CORE_TICK_PERIOD);
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
     mConfigIntCoreTimer(CT_INT_ON | CT_INT_PRIOR_5 | CT_INT_SUB_PRIOR_0);
     INTEnableSystemMultiVectoredInt();
-    
+
     LCD_WriteStringAtPos("Team 1",0,0);
     while(1){
-        
+
         if(btnState == STOP){
             //
         }
@@ -127,8 +128,8 @@ int getHexFromSWT(int n){
             digit3 = SWT_GetValue(6) * 0x4;
             digit4 = SWT_GetValue(7) * 0x8;
         }
-        return digit1 | digit2 | digit3 | digit4; 
-        //return SWT_GetValue(0) & SWT_GetValue(1); 
+        return digit1 | digit2 | digit3 | digit4;
+        //return SWT_GetValue(0) & SWT_GetValue(1);
 }
 
 void update_SSD(int value) {
@@ -159,7 +160,7 @@ void update_SSD(int value) {
         SSD2 = ones;
     tenths = floor(value % 1);
     SSD1 = tenths;
-    
+
     SSD_WriteDigits(SSD1, SSD2, SSD3, SSD4, 0, 1, 0, 0);
 }
 
@@ -167,7 +168,7 @@ void delay_ms(int ms) {
     int i, counter;
     for (counter = 0; counter < ms; counter++) {
         for (i = 0; i < 1300; i++) {
-        } //software delay ~1 millisec 
+        } //software delay ~1 millisec
     }
 }
 
