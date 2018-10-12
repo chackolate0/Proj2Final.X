@@ -1,16 +1,19 @@
 /* ************************************************************************** */
 /** Descriptive File Name
+
   @Company
-    CPEG 222 Team 1
-    Alex Chacko & Matias Saavedra
+ CPEG 222 Team 1
+ * Alex Chacko & Matias Saavedra
+
   @File Name
-    Proj2Final.c
+ Proj2Final.c
+
   @Summary
     Brief description of the file.
+
   @Description
     Describe the purpose of this file.
  */
-
 #pragma config FSRSSEL = PRIORITY_7     // Shadow Register Set Priority Select (SRS Priority 7)
 #pragma config PMDL1WAY = ON            // Peripheral Module Disable Configuration (Allow only one reconfiguration)
 #pragma config IOL1WAY = ON             // Peripheral Pin Select Configuration (Allow only one reconfiguration)
@@ -44,7 +47,16 @@
 #ifndef _SUPPRESS_PLIB_WARNING
 #define _SUPPRESS_PLIB_WARNING
 #endif
+/* ************************************************************************** */
 
+/* ************************************************************************** */
+/* ************************************************************************** */
+/* Section: Included Files                                                    */
+/* ************************************************************************** */
+/* ************************************************************************** */
+
+/* This section lists the other files that are included in this file.
+ */
 #include <xc.h>
 #include <plib.h>
 #include <stdio.h>
@@ -53,21 +65,22 @@
 #include "ssd.h"
 #include <math.h>
 #include "btn.h"
+/* TODO:  Include other files here if needed. */
 
 #define SYS_FREQ (80000000L)
 #define INT_SEC 10
-// #define FOSC (80000000L)
 #define CORE_TICK_RATE (SYS_FREQ/2/INT_SEC)
 
-#define DELAY_BTN 50              //50 ms 1953
-enum states {LEFT, RIGHT, COUNT_UP, COUNT_DOWN, STOP};
+#define DELAY_BTN 50
+
+enum btnState {LEFT, RIGHT, COUNT_UP, COUNT_DOWN, STOP};
 int btnState = STOP;
 int hex1, hex2;
 int ssdVal = 0;
+int ms = 0;
 
 int main(void){
-
-    char hexString[80];
+  char hexString[80];
     LED_Init();
     LCD_Init();
     SSD_Init();
@@ -79,40 +92,38 @@ int main(void){
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
     mConfigIntCoreTimer(CT_INT_ON | CT_INT_PRIOR_5 | CT_INT_SUB_PRIOR_0);
     INTEnableSystemMultiVectoredInt();
-
-    LCD_WriteStringAtPos("Team 1",0,0);
+    LCD_WriteStringAtPos("Team 1", 0, 0);
     while(1){
+      if(btnState == STOP){
 
-        if(btnState == STOP){
-            //
-        }
-        if(btnState == LEFT){
+      }
+      if(btnState == LEFT){
             LED_SetGroupValue(SWT_GetGroupValue());
             hex1 = SWT_GetGroupValue();
             sprintf(hexString, "Hex: %#04X + %#04X", hex1, hex2);
             ssdVal = hex1 + hex2;
         }
-        if(btnState == RIGHT){
+      if(btnState == RIGHT){
             LED_SetGroupValue(SWT_GetGroupValue());
             hex2 = SWT_GetGroupValue();
             sprintf(hexString, "Hex: %#04X + %#04X", hex1, hex2);
             ssdVal = hex1 + hex2;
         }
-        if(btnState == COUNT_UP){
-             int i;
-             for(i=0; i < hex1 + hex2 + 1; i++){
-                update_SSD(i);
-                delay_ms(100);
-                UpdateCoreTimer(CORE_TICK_RATE);
-             }
-             btnState = STOP;
-        }
-        delay_ms(DELAY_BTN);
-        LCD_WriteStringAtPos(hexString, 1, 0);
-        LED_SetGroupValue(SWT_GetGroupValue());
-        update_SSD(SWT_GetGroupValue());
+      if(btnState == COUNT_UP){
+            int i;
+            for(i=0; i<hex1 + hex2 + 1; i++){
+              update_SSD(i);
+              delay_ms(1000);
+            }
+            btnState = STOP;
+            UpdateCoreTimer(CORE_TICK_RATE);
+      }
+      delay_ms(DELAY_BTN);
+      LCD_WriteStringAtPos(hexString, 1, 0);
+      LED_SetGroupValue(SWT_GetGroupValue());
+      update_SSD(SWT_GetGroupValue());
         //SSD_WriteDigitsGroupedDecimal(SWT_GetGroupValue(),0);
-        update_SSD(ssdVal);
+      update_SSD(ssdVal);
     }
 }
 
@@ -134,38 +145,6 @@ int getHexFromSWT(int n){
         //return SWT_GetValue(0) & SWT_GetValue(1);
 }
 
-// void update_SSD(int value) {
-//     int hunds, tens, ones, tenths;
-//     char SSD1 = 0b0000000; //SSD setting for 1st SSD (LSD)
-//     char SSD2 = 0b0000000; //SSD setting for 2nd SSD
-//     char SSD3 = 0b0000000; //SSD setting for 3rd SSD
-//     char SSD4 = 0b0000000; //SSD setting for 4th SSD (MSD)
-//
-//     hunds = floor(value / 100);
-//     if (hunds > 0)
-//         SSD4 = hunds; //SSD4 = display_char[thous];
-//     else
-//         SSD4 = 17; //blank display
-//     tens = floor((value % 100) / 10);
-//     if (hunds == 0 && tens == 0){
-//         SSD3 = 17; //blank display
-//     }
-//     else
-//         SSD3 = tens;
-//     ones = floor(value % 10);
-//     if (hunds == 0 && tens == 0 && ones == 0)
-//         SSD2 = 0;
-//     else
-//         SSD1 = ones;
-//
-//     SSD_WriteDigits(SSD1, SSD2, SSD3, SSD4, 0, 0, 0, 0);
-//         SSD2 = ones;
-//     tenths = floor(value % 10);
-//     SSD1 = tenths;
-//
-//     SSD_WriteDigits(SSD1, SSD2, SSD3, SSD4, 0, 1, 0, 0);
-// }
-
 void update_SSD(int value) {
     int hunds, tens, ones, tenths;
     char SSD1 = 0b0000000; //SSD setting for 1st SSD (LSD)
@@ -182,8 +161,16 @@ void update_SSD(int value) {
         SSD3 = 17; //blank display
     else
         SSD3 = tens;
+	if(btnState==COUNT_UP){
+		int ms;
+		for(ms=0;ms<9;ms++){
+			SSD1 = ms;
+			delay_ms(100);
+		}
+	}
     SSD2 = ones = floor((value*10) % 100 / 10);
-    SSD1 = tenths = floor((value*10) % 10);
+    SSD1 = ms;
+//            tenths = floor((value*10) % 10);
     SSD_WriteDigits(SSD1, SSD2, SSD3, SSD4, 0, 1, 0, 0);
 }
 
@@ -194,14 +181,6 @@ void delay_ms(int ms) {
         } //software delay ~1 millisec
     }
 }
-
-// void countTimer(int ms) {
-//     unsigned int sysCyc = (ReadCoreTimer())/2;
-//     // convert in seconds (1 core tick = 2 SYS cycles)
-//     for(int i = 0; i<sysCyc; i++){
-//         int ssdRead = i;
-//     }
-// }
 
 void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
     mCTClearIntFlag(); //clear interrupt
@@ -225,6 +204,6 @@ void __ISR(_CORE_TIMER_VECTOR, ipl5) _CoreTimerHandler(void){
             delay_ms(DELAY_BTN);
             btnState = COUNT_DOWN;
         }
-    
+
     UpdateCoreTimer(CORE_TICK_RATE);  //update period
 }
