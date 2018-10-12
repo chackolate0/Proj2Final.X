@@ -169,15 +169,14 @@ void update_SSD(int value) {
 		}
 	}
     SSD2 = ones = floor((value*10) % 100 / 10);
-    SSD1 = ms;
-//            tenths = floor((value*10) % 10);
+    SSD1 = tenths = floor((value*10) % 10);
     SSD_WriteDigits(SSD1, SSD2, SSD3, SSD4, 0, 1, 0, 0);
 }
 
 void delay_ms(int ms) {
     int i, counter;
     for (counter = 0; counter < ms; counter++) {
-        for (i = 0; i < 1500; i++) {
+        for (i = 0; i < 1300; i++) {
         } //software delay ~1 millisec
     }
 }
